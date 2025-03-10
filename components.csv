@@ -1,0 +1,31 @@
+component_id,component_name,component_type,price,optimal_for,performance_score
+101,Intel i7-12700K,CPU,400,gaming,9
+102,NVIDIA RTX 3080,GPU,800,gaming,10
+103,32GB DDR4 RAM,RAM,150,gaming,8
+104,AMD Ryzen 9 5900X,CPU,450,video_editing,9
+105,NVIDIA RTX 3070,GPU,600,video_editing,9
+106,16GB DDR4 RAM,RAM,100,video_editing,7
+107,Intel i5-12600K,CPU,300,daily_use,7
+108,NVIDIA GTX 1660,GPU,250,daily_use,6
+109,8GB DDR4 RAM,RAM,50,daily_use,5
+110,AMD Ryzen 7 5800X,CPU,350,programming,8
+111,NVIDIA RTX 3060,GPU,400,programming,8
+112,64GB DDR4 RAM,RAM,300,programming,9
+113,AMD Ryzen 5 5600X,CPU,250,gaming,7
+114,NVIDIA GTX 1670,GPU,300,gaming,7
+115,16GB DDR5 RAM,RAM,120,gaming,8
+116,Intel i9-12900K,CPU,500,video_editing,10
+117,NVIDIA RTX 3090,GPU,1000,video_editing,10
+118,32GB DDR5 RAM,RAM,200,video_editing,9
+119,AMD Ryzen 3 5300X,CPU,150,daily_use,5
+120,NVIDIA GTX 1650,GPU,200,daily_use,5
+121,8GB DDR5 RAM,RAM,80,daily_use,6
+122,Intel i3-12100,CPU,100,programming,4
+123,NVIDIA GTX 1630,GPU,150,programming,4
+124,4GB DDR5 RAM,RAM,40,programming,3
+125,AMD Ryzen 9 5950X,CPU,550,gaming,10
+126,NVIDIA RTX 3080 Ti,GPU,1200,gaming,11
+127,64GB DDR4 RAM,RAM,350,gaming,10
+128,Intel i7-12700,CPU,350,video_editing,9
+129,NVIDIA RTX 3070 Ti,GPU,900,video_editing,10
+130,32GB DDR5 RAM,RAM,250,video_editing,9
