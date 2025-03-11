@@ -16,7 +16,20 @@ df["optimal_for_encoded"] = label_encoder.fit_transform(df["optimal_for"])
 
 # Features (price & encoded category) and targets (CPU, GPU, RAM)
 X = df[["price", "optimal_for_encoded"]]
-y = df[["cpu_id", "gpu_id", "ram_id"]]  # Multi-output target
+
+# get performance scores of individual components from components.csv and add to df and then use performance scores as targets
+components_df = pd.read_csv("components.csv")
+
+df["cpu_performance_score"] = df["cpu_id"].map(
+    components_df.set_index("component_id")["performance_score"])
+df["gpu_performance_score"] = df["gpu_id"].map(
+    components_df.set_index("component_id")["performance_score"])
+df["ram_performance_score"] = df["ram_id"].map(
+    components_df.set_index("component_id")["performance_score"])
+
+
+y = df[["cpu_performance_score", "gpu_performance_score",
+        "ram_performance_score"]]  # Multi-output target
 
 # Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

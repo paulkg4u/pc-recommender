@@ -8,6 +8,8 @@ label_encoder = joblib.load("label_encoder.pkl")
 components_df = pd.read_csv("components.csv")
 
 # Function to get component details
+
+
 def get_component_details(component_id):
     component = components_df[components_df["component_id"] == component_id]
     if not component.empty:
@@ -21,18 +23,50 @@ def get_component_details(component_id):
     return None
 
 # Function to recommend a build
+
+
 def recommend_build(price, optimal_for):
     optimal_for_encoded = label_encoder.transform([optimal_for])[0]
-    X_input = pd.DataFrame([[price, optimal_for_encoded]], columns=["price", "optimal_for_encoded"])
+    X_input = pd.DataFrame([[price, optimal_for_encoded]], columns=[
+                           "price", "optimal_for_encoded"])
 
     # Predict component IDs
-    predicted_components = model.predict(X_input)
-    print(predicted_components)
-    cpu_id, gpu_id, ram_id = predicted_components[0].astype(int)
+    predicted_components_scores = model.predict(X_input)
+
+    cpu_performance_score, gpu_performance_score, ram_performance_score = predicted_components_scores[0].astype(
+        int)
+
+    # from components.csv, get component ids matching the required performance scores, so that the total price does not go over the price
+
+    cpu_id = components_df[(components_df["component_type"] == "CPU") &
+                           (components_df["performance_score"] >= cpu_performance_score) &
+                           (components_df["price"] <= price)].sort_values("price", ascending=True)["component_id"].values[0]
+    remaining_price = price - \
+        components_df[components_df["component_id"]
+                      == cpu_id]["price"].values[0]
+    gpu_id = components_df[(components_df["component_type"] == "GPU") &
+                           (components_df["performance_score"] >= gpu_performance_score) &
+                           (components_df["price"] <= remaining_price)].sort_values("price", ascending=True)["component_id"].values[0]
+    remaining_price = remaining_price - \
+        components_df[components_df["component_id"]
+                      == gpu_id]["price"].values[0]
+    ram_id = components_df[(components_df["component_type"] == "RAM") &
+                           (components_df["performance_score"] >= ram_performance_score) &
+                           (components_df["price"] <= remaining_price)].sort_values("price", ascending=True)["component_id"].values[0]
+
+    if not cpu_id or not gpu_id or not ram_id:
+        return {
+            'success': False,
+            'error': 'Could not find components matching the requirement and budget'
+        }
+
+
 
     return {
-        "CPU": get_component_details(cpu_id),
-        "GPU": get_component_details(gpu_id),
-        "RAM": get_component_details(ram_id),
+        'success': True,
+        'data': {
+            "CPU": get_component_details(cpu_id),
+            "GPU": get_component_details(gpu_id),
+            "RAM": get_component_details(ram_id),
+        }
     }
-

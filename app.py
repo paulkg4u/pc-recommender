@@ -25,5 +25,12 @@ def recommend():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
+@app.route("/", methods=["POST"])
+def index():
+    data = request.json
+    return "Hello, World!"
+
+
 if __name__ == "__main__":
     app.run(debug=True)
