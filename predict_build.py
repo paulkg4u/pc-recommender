@@ -29,7 +29,7 @@ def recommend_build(price, optimal_for):
     optimal_for_encoded = label_encoder.transform([optimal_for])[0]
     X_input = pd.DataFrame([[price, optimal_for_encoded]], columns=[
                            "price", "optimal_for_encoded"])
-
+    remaining_price = price
     # Predict component IDs
     predicted_components_scores = model.predict(X_input)
 
@@ -40,8 +40,8 @@ def recommend_build(price, optimal_for):
 
     cpu_id = components_df[(components_df["component_type"] == "CPU") &
                            (components_df["performance_score"] >= cpu_performance_score) &
-                           (components_df["price"] <= price)].sort_values("price", ascending=True)["component_id"].values[0]
-    remaining_price = price - \
+                           (components_df["price"] <= remaining_price)].sort_values("price", ascending=True)["component_id"].values[0]
+    remaining_price = remaining_price - \
         components_df[components_df["component_id"]
                       == cpu_id]["price"].values[0]
     gpu_id = components_df[(components_df["component_type"] == "GPU") &
@@ -53,6 +53,8 @@ def recommend_build(price, optimal_for):
     ram_id = components_df[(components_df["component_type"] == "RAM") &
                            (components_df["performance_score"] >= ram_performance_score) &
                            (components_df["price"] <= remaining_price)].sort_values("price", ascending=True)["component_id"].values[0]
+    remaining_price = remaining_price - components_df[components_df["component_id"]
+                                                      == ram_id]["price"].values[0]
 
     if not cpu_id or not gpu_id or not ram_id:
         return {
@@ -60,13 +62,13 @@ def recommend_build(price, optimal_for):
             'error': 'Could not find components matching the requirement and budget'
         }
 
-
-
     return {
         'success': True,
         'data': {
             "CPU": get_component_details(cpu_id),
             "GPU": get_component_details(gpu_id),
             "RAM": get_component_details(ram_id),
+            "total_price": float(price - remaining_price)
+
         }
     }
